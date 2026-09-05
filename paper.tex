@@ -1,0 +1,231 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,microtype}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\vis}{\operatorname{Vis}}
+\newcommand{\inv}{\operatorname{Inv}}
+\hypersetup{pdftitle={Polynomial visibility has density one},
+pdfsubject={An elementary proof and complete Lean formalization}}
+\begin{document}
+\begin{center}
+{\LARGE Polynomial visibility has density one\par}
+\vspace{0.3em}
+{\large An elementary bounded-gcd argument\par}
+\vspace{0.6em}
+{\small September 4, 2026}
+\end{center}
+\begin{abstract}
+For every nonzero integral polynomial with at least two distinct complex
+roots, almost every positive lattice point is visible along its rational
+vertical dilates. The proof has two ingredients: the gcd of a polynomial
+value and an independent height is bounded outside a set of arbitrarily
+small upper density; and every fixed proper ratio of polynomial values
+occurs at a set of arguments of density zero. Both ingredients admit
+elementary proofs. No uniform estimate over varying ratios is needed.
+\end{abstract}
+
+\section{Statement and reduction}
+For $F\in\Z[x]$, call $(a,h)\in\Z_{>0}^2$ \emph{visible} if there is
+$t\in\Q$ with $h=tF(a)$ and $a$ is the least positive integer $u$ for
+which $tF(u)$ is a positive integer. Put
+\[
+ V_F(N)=\#\{(a,h)\in[1,N]^2\cap\Z^2:(a,h)\text{ is visible}\}.
+\]
+\begin{theorem}\label{thm:main}
+Let $F\in\Z[x]\setminus\{0\}$ have at least two distinct roots in $\C$.
+Then
+\[
+                    \lim_{N\to\infty}\frac{V_F(N)}{N^2}=1.
+\]
+\end{theorem}
+This is the nonzero version of the Visibility Density Conjecture of
+Lobsenz--Phillips \cite{LP}, extending the origin-passing formulation
+of Chaubey--Pandey \cite{CP}. Lobsenz--Phillips prove the assertion for
+proper powers of polynomials with at least two distinct roots; their
+revised paper also records the resolution of the case $F(0)=0$ by
+Chaubey, Pandey, and Regavim. The argument below treats all nonzero
+polynomials under the stated root
+hypothesis. The explicit exclusion of $F=0$ is necessary: otherwise
+every complex number is a root, but no positive lattice point is visible.
+
+Replacing $F$ by $-F$ leaves visibility unchanged, by replacing $t$ by
+$-t$. We may therefore assume that its leading coefficient is positive.
+There is $A_F$ such that, whenever $a>A_F$,
+\begin{equation}\label{eq:record}
+             F(a)>\max\bigl(0,F(1),\ldots,F(a-1)\bigr).
+\end{equation}
+Indeed, a nonconstant polynomial with positive leading coefficient is
+eventually strictly increasing and tends to infinity. The columns
+$a\le A_F$ contain only $O_F(N)$ points.
+
+For $a>A_F$ set $g=\gcd(F(a),h)$. If $(a,h)$ is invisible, its unique
+possible scale is $t=h/F(a)$, and some $1\le u<a$ satisfies
+$hF(u)/F(a)\in\Z_{>0}$. Consequently
+\[
+ F(a)\mid hF(u),\qquad 0<F(u)<F(a).
+\]
+Since $F(a)/g$ and $h/g$ are coprime, $F(a)/g$ divides $F(u)$.
+Thus there is an integer $r$ such that
+\begin{equation}\label{eq:finite-ratio}
+                  F(u)=\frac r g F(a),\qquad 1\le r<g.
+\end{equation}
+We will show that $g$ can first be bounded at arbitrarily small density
+cost, and then handle the resulting finite list of ratios.
+
+\section{The gcd cutoff}
+\begin{lemma}\label{lem:tight}
+For every nonzero $F\in\Z[x]$ and every $\varepsilon>0$ there is an
+integer $M\ge1$ such that, for every $N\ge1$,
+\[
+ \frac1{N^2}
+ \#\{1\le a,h\le N:\gcd(|F(a)|,h)>M\}<\varepsilon.
+\]
+\end{lemma}
+\begin{proof}
+Write $d=\deg F$. Choose an integer $K\ge2$ so large that every prime
+for which $F$ is the zero polynomial modulo that prime is at most $K$.
+This excludes only finitely many primes, since $F$ has a nonzero
+coefficient. For any prime $p>K$, the congruence $F(a)\equiv0\pmod p$
+has at most $d$ residue classes. Hence
+\[
+ \#\{1\le a,h\le N:p\mid F(a),\ p\mid h\}
+ \le d\left(\frac Np+1\right)\frac Np.
+\]
+Any prime dividing $h$ is at most $N$, and for $p\le N$ we have
+$N/p+1\le2N/p$. Summing over $K<p\le N$ and enlarging the sum to
+all integers gives the bound, uniform in $N$,
+\begin{equation}\label{eq:large-primes}
+ \frac{\#\{(a,h)\in[1,N]^2:\exists p>K,\ p\mid\gcd(|F(a)|,h)\}}{N^2}
+ \le 2d\sum_{n>K}\frac1{n^2}\le\frac{2d}{K}.
+\end{equation}
+For any fixed positive integer $E$, the proportion of heights divisible
+by $p^E$ is at most $p^{-E}$. Outside a set of pairs of proportion at most
+$\sum_{p\le K}p^{-E}$, none of these small-prime powers divides $h$.
+If neither exceptional event occurs, then
+\[
+       \gcd(|F(a)|,h)\le M:=\prod_{p\le K}p^{E-1}.
+\]
+Choose $K$ with $2d/K<\varepsilon/2$, and then $E$ with
+$\sum_{p\le K}p^{-E}<\varepsilon/2$. Combining the two exceptional
+sets proves the claim. This also covers $F(a)=0$,
+since $\gcd(0,h)=h>0$ and the same prime-divisor argument applies.
+\end{proof}
+
+\section{Fixed ratios are sparse}
+\begin{lemma}\label{lem:sparse}
+Let $F\in\R[x]$ have degree $d\ge2$, positive leading coefficient,
+and at least two distinct complex roots. For each $q\in(0,1)$, the set
+\[
+ S_q=\{a\in\Z_{>0}:\exists u\in\Z_{>0},\ u<a,\ F(u)=qF(a)\}
+\]
+has natural density zero.
+\end{lemma}
+\begin{proof}
+Write
+\[
+ F(x)=c x^d+b x^{d-1}+O_F(x^{d-2}),\quad
+ \alpha=q^{1/d}\in(0,1),\quad
+ \beta=\frac{b(\alpha-1)}{dc}.
+\]
+For any fixed $\eta>0$, the polynomials
+$F(\alpha x+\beta\pm\eta)-qF(x)$ have degree $d-1$ and leading
+coefficients $\pm dc\alpha^{d-1}\eta$. Consequently, for large $a$,
+\[
+ F(\alpha a+\beta-\eta)<qF(a)<F(\alpha a+\beta+\eta).
+\]
+Along solutions with $a\to\infty$ we have $u\to\infty$.
+Eventual strict monotonicity of $F$ therefore places $u$ between these
+two arguments. As $\eta$ is arbitrary, this proves
+\begin{equation}\label{eq:asymptote}
+                  u=\alpha a+\beta+o_{F,q}(1).
+\end{equation}
+
+Suppose first that $\alpha$ is irrational. Fix $L\ge1$ and set
+\[
+ \delta_L=\min_{1\le j\le L}\operatorname{dist}(j\alpha,\Z)>0.
+\]
+Beyond a fixed threshold, the error in \eqref{eq:asymptote} has absolute
+value less than $\delta_L/3$. Two such solutions with
+$1\le a'-a\le L$ would give
+\[
+ \operatorname{dist}\bigl((a'-a)\alpha,\Z\bigr)
+ \le |(u'-u)-\alpha(a'-a)|<2\delta_L/3,
+\]
+a contradiction. Thus every block of $L+1$ consecutive sufficiently
+large integers contains at most one member of $S_q$. Its upper density
+is at most $1/(L+1)$; letting $L\to\infty$ proves the assertion.
+
+Suppose next that $\alpha$ is rational. Choose $D\ge1$ such that
+$D\alpha\in\Z$. Then $u-\alpha a\in D^{-1}\Z$.
+Equation \eqref{eq:asymptote} shows that, if arbitrarily large solutions
+exist, necessarily $\beta\in D^{-1}\Z$ and all sufficiently large
+solutions satisfy $u=\alpha a+\beta$ exactly. If infinitely many
+solutions existed, the polynomial
+\[
+                    F(\alpha x+\beta)-qF(x)
+\]
+would have infinitely many zeros, and so would vanish identically.
+Let $R$ be the finite nonempty set of complex roots of $F$, and let
+$T(z)=\alpha z+\beta$. This identity implies $T(R)\subseteq R$.
+As $T$ is injective and $R$ finite, $T(R)=R$. But the diameter satisfies
+\[
+          \operatorname{diam}(R)=\operatorname{diam}(T(R))
+                              =\alpha\operatorname{diam}(R).
+\]
+Since $0<\alpha<1$, the diameter is zero, contrary to the existence of
+two distinct roots. In this case $S_q$ is in fact finite.
+\end{proof}
+
+\section{Completion of the proof}
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Fix $\varepsilon>0$ and choose $M$ from Lemma~\ref{lem:tight}.
+Let
+\[
+       S_M=\bigcup_{2\le g\le M}\ \bigcup_{1\le r<g}S_{r/g}.
+\]
+This is a finite union of sets of density zero by Lemma~\ref{lem:sparse},
+so $\#(S_M\cap[1,N])=o_{F,M}(N)$.
+By \eqref{eq:finite-ratio}, every invisible point in $[1,N]^2$ either
+has $a\le A_F$, has $\gcd(F(a),h)>M$, or has $a\in S_M$.
+It follows that
+\[
+ \limsup_{N\to\infty}\frac{N^2-V_F(N)}{N^2}
+ \le 0+\varepsilon+
+       \lim_{N\to\infty}\frac{N\,\#(S_M\cap[1,N])}{N^2}
+ =\varepsilon.
+\]
+Since $\varepsilon$ is arbitrary and the left side is nonnegative,
+$N^2-V_F(N)=o(N^2)$.
+\end{proof}
+
+\begin{remark}
+The order of limits is essential: first fix an error tolerance and its
+gcd cutoff $M$, then let $N\to\infty$. The proof requires no uniform
+control of $S_{r/g}$ as $g$ grows. In particular it does not assert an
+unproved average-gcd bound for two polynomial values.
+\end{remark}
+
+\paragraph{Formal verification.}
+The accompanying Lean~4.28.0 project proves the integer-polynomial theorem
+as \texttt{PolynomialVisibility.visibility\_density\_one}, using
+mathlib~v4.28.0. The complete proof has no admitted steps or additional
+axioms; its dependencies are only the standard logical foundations
+\texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.
+
+\begin{thebibliography}{9}
+\bibitem{CP} S. Chaubey and A. K. Pandey,
+\emph{On the density of visible lattice points along polynomials},
+2021, \href{https://arxiv.org/abs/2109.08431}{arXiv:2109.08431}.
+\bibitem{LP} A. Lobsenz and T. Phillips,
+\emph{Lattice point visibility along powers of polynomials},
+2026, \href{https://arxiv.org/abs/2604.23050v3}{arXiv:2604.23050v3}.
+\end{thebibliography}
+\end{document}

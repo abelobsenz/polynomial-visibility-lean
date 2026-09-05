@@ -1,0 +1,12 @@
+.lake/
+tmp/
+.DS_Store
+**/.DS_Store
+*.aux
+*.log
+*.out
+*.toc
+*.olean
+*.ilean
+Check*.lean
+AuditCheck.lean

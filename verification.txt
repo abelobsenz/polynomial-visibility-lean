@@ -1,0 +1,29 @@
+$ lake env lean --version
+Lean (version 4.28.0, arm64-apple-darwin24.6.0, commit 7e01a1bf5c70fc6167d49c345d3bf80596e9a79b, Release)
+Exit code: 0
+
+$ lake build
+Build completed successfully (8043 jobs).
+Exit code: 0
+
+$ lake env lean Audit.lean
+PolynomialVisibility.visibility_density_one (F : Polynomial ℤ) (hF : F ≠ 0)
+  (hroots : PolynomialVisibility.HasTwoDistinctRoots F) : PolynomialVisibility.HasVisibilityDensityOne F
+def PolynomialVisibility.HasTwoDistinctRoots : Polynomial ℤ → Prop :=
+fun F => ∃ z w, z ≠ w ∧ (Polynomial.aeval z) F = 0 ∧ (Polynomial.aeval w) F = 0
+def PolynomialVisibility.Visible : Polynomial ℤ → ℕ → ℕ → Prop :=
+fun F a h =>
+  0 < a ∧
+    0 < h ∧
+      ∃ t,
+        ↑h = t * ↑(Polynomial.eval (↑a) F) ∧
+          ∀ (u : ℕ), 0 < u → PolynomialVisibility.IsPositiveInteger (t * ↑(Polynomial.eval (↑u) F)) → a ≤ u
+def PolynomialVisibility.HasVisibilityDensityOne : Polynomial ℤ → Prop :=
+fun F => Filter.Tendsto (fun N => ↑(PolynomialVisibility.visibleCount F N) / ↑N ^ 2) Filter.atTop (nhds 1)
+'PolynomialVisibility.visibility_density_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PolynomialVisibility.gcdTight_of_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PolynomialVisibility.polynomial_ratio_approximation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PolynomialVisibility.naturalDensityZero_fixedRatioSet' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PolynomialVisibility.literal_conjecture_false' depends on axioms: [propext, Classical.choice, Quot.sound]
+Exit code: 0
+
